@@ -86,7 +86,7 @@ app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
     const conn = await pool.getConnection();
 
     try {
-        await conn.query("UPDATE `playerdata` SET points = ?, inventory = ?, challenges = ? WHERE userid = ?;", [points, inventory, challenges, id])
+        await conn.query("UPDATE `playerdata` SET points = ?, inventory = ?, challenges = ? WHERE userid = ?;", [points, JSON.stringify(inventory), JSON.stringify(challenges), id])
 
         res.status(200).json({
             status: 'success'
