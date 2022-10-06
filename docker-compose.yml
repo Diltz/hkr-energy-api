@@ -1,0 +1,11 @@
+version: '3.18'
+services:
+  node:
+    image: node:18-alpine
+  
+  api:
+    container_name: "hkr-energy-api"
+    build: .
+    env_file: .env
+    ports:
+      - "${PORT}:${PORT}"

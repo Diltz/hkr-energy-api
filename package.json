@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "express-rate-limit": "^6.6.0",
+    "helmet": "^6.0.0",
+    "mariadb": "^3.0.1"
+  },
+  "name": "hkr-energy-api",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Diltz/hkr-energy-api.git"
+  },
+  "author": "Diltz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Diltz/hkr-energy-api/issues"
+  },
+  "homepage": "https://github.com/Diltz/hkr-energy-api#readme"
+}
