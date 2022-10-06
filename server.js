@@ -71,6 +71,35 @@ app.get('/', async (req, res) => {
     })
 });
 
+// update user data
+
+app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
+    const {id} = req.params;
+    const {points, inventory, challenges} = req.body;
+
+    if (!id) {
+        return res.status(400).json({
+            error: 'Missing id parameter'
+        })
+    }
+
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.query("UPDATE `playerdata` SET points = ?, inventory = ?, challenges = ? WHERE userid = ?;", [points, inventory, challenges, id])
+
+        res.status(200).json({
+            status: 'success'
+        })
+    } catch (err) {
+        res.status(500).json({
+            error: err
+        })
+    }
+
+    conn.release()
+})
+
 // get user data by userid
 
 app.get('/v1/player-data/:id', checkKey, async (req, res) => {
