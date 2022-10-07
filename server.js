@@ -77,8 +77,6 @@ app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
     const {id} = req.params;
     const {points, inventory, challenges} = req.body;
 
-    console.log(id, points, inventory, challenges);
-
     if (!id) {
         return res.status(400).json({
             error: 'Missing id parameter'
