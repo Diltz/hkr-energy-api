@@ -77,6 +77,8 @@ app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
     const {id} = req.params;
     const {points, inventory, challenges} = req.body;
 
+    console.log(id, points, inventory, challenges);
+
     if (!id) {
         return res.status(400).json({
             error: 'Missing id parameter'
@@ -84,6 +86,26 @@ app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
     }
 
     const conn = await pool.getConnection();
+
+    try {
+        let rows = await conn.query("SELECT * FROM `playerdata` WHERE userid = ? LIMIT 1", [id])
+
+        if (!rows[0]) {
+            await conn.query("INSERT INTO `playerdata` (userid, points, inventory, challenges) VALUES (?, ?, ?, ?)", [id, points, inventory, challenges])
+            conn.release()
+
+            return res.status(200).json({
+                status: 'success'
+            })
+        }
+    } catch (err) {
+        conn.release()
+
+        return res.status(500).json({
+            error: 'Internal server error',
+            message: err.message
+        })
+    }
 
     try {
         await conn.query("UPDATE `playerdata` SET points = ?, inventory = ?, challenges = ? WHERE userid = ?;", [points, JSON.stringify(inventory), JSON.stringify(challenges), id])
@@ -118,10 +140,11 @@ app.get('/v1/player-data/:id', checkKey, async (req, res) => {
         const row = rows[0]
 
         if (row) {
-            row.inventory = JSON.parse(row.inventory);
-            row.challenges = JSON.parse(row.challenges);
-
-            res.status(200).json(row);
+            res.status(200).json({
+                points: row.points,
+                challenges: JSON.parse(row.challenges),
+                inventory: JSON.parse(row.inventory)
+            });
         } else {
             res.status(404).json({
                 error: 'User not found'
