@@ -77,7 +77,7 @@ app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
     const {id} = req.params;
     const {points, inventory, challenges} = req.body;
 
-    if (!id) {
+    if (!id || !Number(id)) {
         return res.status(400).json({
             error: 'Missing id parameter'
         })
@@ -89,7 +89,7 @@ app.put("/v1/player-data/update/:id", checkKey, async (req, res) => {
         let rows = await conn.query("SELECT * FROM `playerdata` WHERE userid = ? LIMIT 1", [id])
 
         if (!rows[0]) {
-            await conn.query("INSERT INTO `playerdata` (userid, points, inventory, challenges) VALUES (?, ?, ?, ?)", [id, points, inventory, challenges])
+            await conn.query("INSERT INTO `playerdata` (userid, points, inventory, challenges) VALUES (?, ?, ?, ?)", [Number(id), points, JSON.stringify(inventory), JSON.stringify(challenges)])
             conn.release()
 
             return res.status(200).json({
